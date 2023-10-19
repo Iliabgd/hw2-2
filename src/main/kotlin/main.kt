@@ -1,16 +1,17 @@
 data class Post(
-    var id: Int = 0,
-    val text: String,
-    val fromId: Int, // Идентификатор автора записи
-    val ownerId: Int, // Идентификатор владельца стены, на которой размещена запись
-    val friendsOnly: Boolean = false,
-    val postType: String = "post",
-    val canDelete: Boolean = true,
-    val canEdit: Boolean = true,
-    val comments: Comments = Comments(0)
+        var id: Int = 0,
+        val text: String,
+        val fromId: Int, // Идентификатор автора записи
+        val ownerId: Int, // Идентификатор владельца стены, на которой размещена запись
+        val friendsOnly: Boolean = false,
+        val postType: String = "post",
+        val canDelete: Boolean = true,
+        val canEdit: Boolean = true,
+        val comments: Comments = Comments(0)
 )
-data class Comments (
-    val count: Int
+
+data class Comments(
+        val count: Int
 )
 
 object WallService {
@@ -29,6 +30,10 @@ object WallService {
             }
         }
         return false
+    }
+    fun clearWall() {
+        posts = emptyArray()
+        lastPubId = 0 // обнуляем счетчик id для постов
     }
 
     fun printPosts() {
@@ -59,4 +64,5 @@ fun main() {
     WallService.printPosts()
     WallService.commentPost(2)
     WallService.printPosts()
+
 }
