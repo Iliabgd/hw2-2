@@ -12,21 +12,21 @@ class PostingTest {
 
     @Test
     fun addPost() {
-        val addingPost = Post(2, "Hello, my friend!", 234, 3)
-        WallService.add(addingPost)
-        assertEquals(2, addingPost.id)
+        val addingPost = Post(223, "Hello, my friend!", 234, 3)
+        val addResult = WallService.add(addingPost)
+        assertEquals(1, addResult.id)
     }
 
     @Test
     fun updateExistId() {
         val service = WallService
-        service.add(Post(1, "Hello", 12, 34))
-        service.add(Post(2, "Hello, baby", 78, 24))
-        service.add(Post(3, "Asta la vista, baby", 7, 14))
+        service.add(Post(31, "Hello", 12, 34))
+        service.add(Post(572, "Hello, baby", 78, 24))
+        service.add(Post(13, "Asta la vista, baby", 7, 14))
 
         val updPost = Post(2, "Hello, crazy frog", 78, 24)
         val result = service.update(updPost)
-
+        WallService.printPosts()
         assertTrue(result)
     }
 
@@ -37,7 +37,7 @@ class PostingTest {
         service.add(Post(5, "Hello, baby", 78, 24))
         service.add(Post(6, "Asta la vista, baby", 7, 14))
 
-        val updPost = Post(6, "Hello, crazy frog", 78, 24)
+        val updPost = Post(5, "Hello, crazy frog", 78, 24)
         val result = service.update(updPost)
 
         assertFalse(result)

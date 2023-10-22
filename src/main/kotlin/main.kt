@@ -34,6 +34,7 @@ object WallService {
     fun clearWall() {
         posts = emptyArray()
         lastPubId = 0 // обнуляем счетчик id для постов
+        println("Clearing the Wall")
     }
 
     fun printPosts() {
