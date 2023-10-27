@@ -1,13 +1,32 @@
+import java.util.Date
+
 data class Post(
-        var id: Int = 0,
-        val text: String,
-        val fromId: Int, // Идентификатор автора записи
-        val ownerId: Int, // Идентификатор владельца стены, на которой размещена запись
-        val friendsOnly: Boolean = false,
-        val postType: String = "post",
-        val canDelete: Boolean = true,
-        val canEdit: Boolean = true,
-        val comments: Comments = Comments(0)
+    var id: Int = 0,
+    val text: String,
+    val fromId: Int, // Идентификатор автора записи
+    val ownerId: Int, // Идентификатор владельца стены, на которой размещена запись
+    val createdBy: Int = 0,
+    val date: Int = 0,
+    val replyOwnerId: Int = 0,
+    val replyPostId: Int = 0,
+    val copyright: String? = null,
+    val friendsOnly: Boolean = false,
+    val postType: String = "post",
+    val canDelete: Boolean = true,
+    val canEdit: Boolean = true,
+    val likes: Int = 0,
+    val reposts: Post? = null,
+    val views: Int = 0,
+    val postSource: Int = 0,
+    val geo: String = "geo label",
+    val signerId: Int = 0,
+    var copyHistory: Int = 0,//не понял, как описать переменную
+    val canPin: Boolean = true,
+    val isPinned: Boolean = false,
+    val markedAsAds: Boolean = false,
+    val isFavorite: Boolean = false,
+    val postponedId: Int = 0,
+    val comments: Comments = Comments(0)
 )
 
 data class Comments(
