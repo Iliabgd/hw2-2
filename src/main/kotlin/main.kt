@@ -20,14 +20,15 @@ data class Post(
     val postSource: Int = 0,
     val geo: String = "geo label",
     val signerId: Int = 0,
-    var copyHistory: Int = 0,//не понял, как описать переменную
+    var copyHistory: Int = 0,
     val canPin: Boolean = true,
     val isPinned: Boolean = false,
     val markedAsAds: Boolean = false,
     val isFavorite: Boolean = false,
     val postponedId: Int = 0,
     val comments: Comments = Comments(0),
-    val attachments: Array<Attachment> = emptyArray()
+    val attachments: Array<Attachment> = emptyArray(),
+    val comment: Comment? = null
 )
 
 data class Comments(
@@ -38,14 +39,12 @@ interface Attachment {
     val type: String
 
 }
-
 data class Photo(
     val id: Int,
     val ownerId: Int,
     val photo130: String,
     val photo604: String
 )
-
 data class PhotoAttachment(
     val photo: Photo
 ) : Attachment {
@@ -54,7 +53,6 @@ data class PhotoAttachment(
         return "type: $type and photo: $photo"
     }
 }
-
 data class Audio(
     val id: Int,
     val ownerId: Int,
@@ -62,7 +60,6 @@ data class Audio(
     val title: String,
     val duration: Int
 )
-
 data class AudioAttachment(
     val audio: Audio
 ) : Attachment {
@@ -120,9 +117,19 @@ data class GiftAttachment(
     }
 }
 
+data class Comment(
+        val commentId: Int,
+        val commentFromId: Int,
+        val commentText: String
+)
+class PostNotFoundException (message: String) : RuntimeException(message)
+
 object WallService {
     private var posts = emptyArray<Post>()
     private var lastPubId = 0
+    private var lastCommentId = 0
+    private var comments = emptyArray<Comment>()
+
     fun add(post: Post): Post {
         posts += post.copy(id = ++lastPubId)
         return posts.last()
@@ -141,6 +148,8 @@ object WallService {
     fun clearWall() {
         posts = emptyArray()
         lastPubId = 0 // обнуляем счетчик id для постов
+        comments = emptyArray()
+        lastCommentId = 0
         println("Clearing the Wall")
     }
 
@@ -159,11 +168,30 @@ object WallService {
             }
         }
     }
+
+fun findById(postId: Int): Post? {
+    for (post in posts) {
+        if (post.id == postId) {
+            return post
+        }
+    }
+    return null
+}
+
+fun createComment(postId: Int, comment: Comment): Comment {
+    for ((index, post) in posts.withIndex()) {
+        if (post.id == postId) {
+            comments += comment.copy(commentId = ++lastCommentId)
+            return comments.last()
+        }
+    }
+    return throw PostNotFoundException("Нет такого поста с id $postId, чтобы прокомментировать!")
+}
 }
 
 fun main() {
     val post = Post(
-        1, "Hello", 12, 34,
+        11, "Hello", 12, 34,
         attachments = arrayOf(
             PhotoAttachment(
                 Photo(
@@ -177,7 +205,7 @@ fun main() {
 
     WallService.add(
         Post(
-            2, "Hello, baby", 78, 24,
+            21, "Hello, baby", 78, 24,
             attachments = arrayOf(
                 AudioAttachment(
                     Audio(1, 11, "AC-DC", "Thunderstorm", 300)
@@ -191,7 +219,7 @@ fun main() {
 
     WallService.add(
         Post(
-            3, "Asta la vista, baby", 7, 14,
+            23, "Asta la vista, baby", 7, 14,
             attachments = arrayOf(
                 VideoAttachment(
                     Video(1, 34, "How to cook pretty cookies", 457)
@@ -238,6 +266,10 @@ fun main() {
         )
     )
     WallService.printPosts()
-    //WallService.commentPost(2)
-    //    WallService.printPosts()
+
+    // homework 3_1 Exceptions
+    val newComment = Comment(1, 457, "Comment to comment")
+    WallService.createComment(5, newComment)
+    WallService.update(Post(5, "Hello, baby", 78, 24, comment = newComment))
+    WallService.printPosts()
 }
